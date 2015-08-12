@@ -1,0 +1,134 @@
+Intro
+=====
+
+This software is system for goldsprints competitions[1]. It is useful
+only with specific hardware instalation which includes Arduino board
+(with specific program loaded) connected whith 2 Hall effect sensors,
+magnets attached to rollers and 2 bikes of course.
+
+Once everything is plugged correctly, and program which counts roller
+turns is loaded on Arduino board (its source is in goldsprints.pde) ,
+you can test it by running `main.py` python script in main directory.
+
+Requirements
+============
+
+Whole system hopefully is platform independent. At least it runs on
+Linux (Debian 5.0) and Windows XP. Beyond hardware requirements
+written above, software requirements are as follows:
+
+- Python >= 2.6 [2]
+- Pygame >= 1.9 [3]
+- PySerial [4]
+- lightblue [5]
+
+I do *not* recommend though running software on Python3000, I havent tested
+it yet properly.
+
+Installation
+============
+
+Download all of the required software libraries and python interpreter
+in proper versions (as written above) for the platform of your choice. and
+install it in the following order: 
+
+1. python (http://www.python.org/download/) 
+2. pygame (http://www.pygame.org/download.shtml) 
+3. pyserial (http://pypi.python.org/pypi/pyserial)
+4. lightblue
+
+Next, extract (what you probably already done because you're reading
+this) the software package to the choosen directory. After that,
+you'll probably want to configure path enviroment variables in your
+operating system so that, you can reach your python interpreter easily.
+
+On Windows operating system, you have to configure $PATH enviroment
+variable. Please refer to documentation of your operating system how
+to do that.
+
+Another step is to find the virtual COM port which comunicates with
+Arduino board. On Windows you have to find it in system's Device
+Manager. On Linux it'll be one of /dev/ttyUSB?. 
+
+Basic Usage
+===========
+
+First, start your system console. On Windows systems, it's called
+cmd.exe. Go to the installation directory of software and type:
+
+Windows:
+python.exe main.py -s COM<n>
+
+Linux:
+python main.py -s /dev/ttyUSB<n>
+
+and of course replace <n> with virtual port number to which arduino
+board is connected.
+
+From this point you can establish new races with the simple
+gui. To switch between input boxes, use TAB key. To start new race,
+hit Enter.  
+
+Keystrokes
+==========
+
+a - abort race
+q - quit 
+0,1 - "helping" respective player ;)
+
+
+Remote control via telnet
+=========================
+
+It's possible to control the competition via remote computer over
+network. To achieve this, you must connect computers to network and
+know the IP address of the computer on which the goldsprints software
+is installed. Then, start the telnet client with the that IP address
+and port number: 9999 as an arguments. If you succecfully connected,
+to the goldsprints system, you can execute commands to the program,
+such as: new_race, start, abort, show_results and so on. For the
+reference of implemented commands, type 'help'.
+
+Qualifications
+==============
+
+Finals
+======
+
+Development
+===========
+
+Whole software is written rather horribly and chaotic. I did my best to
+wrote it as much object-oriented as i can, but be prepared for a lot
+of spaghetti code and tricky functional parts (which i love anyways
+;)). There is not much comments and documentation strings too (sorry!)
+but I kept them and variable names in english.
+
+Files
+-----
+- main.py - main program which handles commandline options,
+  	    starts 2 frontends (command server - cmdserver.py and 
+	    graphical one - pgfrontend.py) to control competition
+- client.py - graphical frontend to start and abort races
+- goldsprints.py - main goldpsprints engine in charge of taking data
+  		   from arduino, writing times and figuring out next
+		   race according to single-elimination tournament
+- visualize.py - classes controlling graphical output; pygame based
+- child.py - another instance of program which takes data by pipe from 
+  	     main.py and visualize them on window (also using pygame
+	     library)
+- cmdserver.py - network server accepting commands from raw telnet
+  	       	 client
+- pgfrontend.py - graphical client intended to work locally (unlike
+  		  client.py and cmwc_client.py)
+- cmwc_client.py - another graphical client written specificly for
+  		   CMWC2k+11 in Warsaw
+
+
+References
+==========
+[1] - http://en.wikipedia.org/wiki/Goldsprints
+[2] - http://www.python.org
+[3] - http://www.pygame.org
+[4] - http://pyserial.sourceforge.net
+[5] - http://lightblue.sourceforge.net
