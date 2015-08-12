@@ -266,7 +266,7 @@ class Race2(Race):
         avg_between_time=[start_time,start_time]
         avg_between_dist = [0,0]
         between_dist=[0,0]
-        speed=0
+        speed=[0,0]
 
         results=[None, None]
 
@@ -289,11 +289,11 @@ class Race2(Race):
                     dpos = curr_dist[p]-between_dist[p]
                     if dpos>0:
                         if curr_time-avg_between_time[p]> 2.5: # upd speed every 2.5 sec.
-                            speed = 3600*self.gs.roller_circum*self.gs.dev.threshold*(curr_dist[p]-avg_between_dist[p])/(curr_time-avg_between_time[p])
+                            speed[p] = 3600*self.gs.roller_circum*self.gs.dev.threshold*(curr_dist[p]-avg_between_dist[p])/(curr_time-avg_between_time[p])
                             avg_between_time[p]=curr_time
                             avg_between_dist[p] = curr_dist[p]
 
-                        self.gs.out.update_race(p, curr_dist[p], dpos, speed,
+                        self.gs.out.update_race(p, curr_dist[p], dpos, speed[p],
                                                 curr_time-start_time)
                         between_dist[p]=curr_dist[p]
                     between_time[p]=curr_time
