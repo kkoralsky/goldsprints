@@ -260,13 +260,12 @@ class Race2(Race):
         if e_inf=='false start':
             self.gs.abort.set()
 
-        start_time=time()
-        deltatime=0
-        between_time=[start_time,start_time]
-        avg_between_time=[start_time,start_time]
-        avg_between_dist = [0,0]
-        between_dist=[0,0]
-        speed=[0,0]
+        start_time = time()
+        between_time = [start_time, start_time]
+        avg_between_time = [start_time, start_time]
+        avg_between_dist = [0, 0]
+        between_dist = [0, 0]
+        speed = [0, 0]
 
         results=[None, None]
 
