@@ -94,7 +94,7 @@ gs=Goldsprints(out, dev, opts.distance, opts.unit, opts.sampling,
                opts.roller_circum, sets=opts.sets.split(','))
 
 
-if args and len(args)==1:
+if args and len(args)==1 and os.path.exists(args[0]):
     for r in csv.reader(open(args[0])):
         r=[ float(r[0]), dict(zip(('set', 'name'), r[1:])) ]
         if r[1]['set'] in gs.sets:
