@@ -27,8 +27,8 @@ Item {
     }
 
     function finish() {
-	abort()
-    	console.log('finish')
+        abort();
+    	console.log('finish');
     }
     //function finish(blue_res, red_res) {
         //abort()
