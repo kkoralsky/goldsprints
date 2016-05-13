@@ -1,7 +1,7 @@
 Intro
 =====
 
-This is software for [Goldsprints competitions](http://en.wikipedia.org/wiki/Goldsprints).
+This is software for [Goldsprint competitions](http://en.wikipedia.org/wiki/Goldsprint).
 
 
 Requirements
