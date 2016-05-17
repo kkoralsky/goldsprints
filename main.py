@@ -4,8 +4,8 @@ screen_res=(640,480)
 
 distance=400
 unit=5
-roller_circum=.00025 # in kmeters
-dev='' # '02:11:09:20:01:96,00:11:11:29:06:20'
+roller_circum=.00025 # in km
+dev=''
 output_file='results.txt'
 input_file='input.txt'
 false_start=5
