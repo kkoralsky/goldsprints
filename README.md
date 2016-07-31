@@ -1,6 +1,3 @@
-Intro
-=====
-
 This is software for [Goldsprint competitions](http://en.wikipedia.org/wiki/Goldsprint).
 
 
