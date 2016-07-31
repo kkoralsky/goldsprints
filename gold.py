@@ -1,5 +1,22 @@
 #!/usr/bin/python
 
+import os
+import re
+import csv
+import sys
+from optparse import OptionParser
+from pickle import load, UnpicklingError
+from subprocess import Popen, PIPE
+import site
+site.addsitedir('src')
+
+from cmdserver import CommandServer
+from pgfrontend import PgFront
+from goldsprints import Goldsprints, CMWCGoldsprints, Output
+from qtcontrol import QtControl, OutInterface
+from device import * #BluetoothDev, SerialDev, Dev, DoubleSerialDev
+
+
 screen_res=(640,480)
 
 distance=400
@@ -11,21 +28,9 @@ input_file='input.txt'
 false_start=5
 sampling = 0.04
 
-from cmdserver import CommandServer
-from pgfrontend import PgFront
-from goldsprints import Goldsprints, CMWCGoldsprints, Output
-from qtcontrol import QtControl, OutInterface
-from device import * #BluetoothDev, SerialDev, Dev, DoubleSerialDev
-from optparse import OptionParser
-from pickle import load, UnpicklingError
-from subprocess import Popen, PIPE
-import os
-import re
-import csv, sys
-
-p = OptionParser(conflict_handler="resolve", version="%prog 0.5",
+p = OptionParser(conflict_handler="resolve", version="%prog 0.8",
                  usage="%prog [options] [<input_times>]",
-                 description="W-F-K GOLDSPRINTS")
+                 description="GOLDSPRINTS")
 p.add_option('--version', '-v', action='version', help='print version of program')
 p.add_option('--distance', '-d', action='store', type='int', default=distance)
 p.add_option('--unit', '-u', action='store', type='int', default=unit)
@@ -80,12 +85,15 @@ try:
         elif re.match(r'\d{1,2}[UD],\d{1,2}[UD]', opts.dev):
             dev = RaspGPIODev(opts.dev, opts.threshold)
         else:
-            dev=DoubleSerialDev(opts.dev, opts.threshold)
+            dev = DoubleSerialDev(opts.dev, opts.threshold)
     else:
         if opts.dev.find(':')>0:
             dev=BluetoothDev(opts.dev, opts.threshold)
         elif os.path.exists(opts.dev):
             dev=SerialDev(opts.dev, opts.threshold)
+        else:
+            dev = Dev(threshold=opts.threshold)
+
 except ValueError:
     print('ERROR while initializing device')
     dev=Dev(threshold=opts.threshold)

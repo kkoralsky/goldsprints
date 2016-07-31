@@ -174,7 +174,7 @@ Item {
                         abort()
                         cmd.abort()
                     } else {
-                        cmd.start_race()
+                        cmd.start()
                         yes_youre_racing=true
                     }
 

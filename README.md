@@ -35,6 +35,17 @@ Linux and probably on Windows XP.
 Installation
 ============
 
+# Install required packages. In Debian/Ubuntu:
+
+    # apt-get install libqt4-dev qt4-qmake build-essential python-pygame
+
+# install python modules from requirements.txt
+
+    % pip install -r requirements.txt
+
+I recommend to create proper [virtual environment](https://virtualenv.pypa.io/en/latest/)
+first though and then, run `pip`.
+
 
 Quick start
 ===========

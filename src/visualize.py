@@ -8,7 +8,7 @@ from random import randint, shuffle
 from time import sleep
 from copy import copy
 
-#from GIFImage import GIFImage
+BASE_DATA_PATH = os.path.join('src', 'data')
 
 class LayersStack:
     "Represents stack of backgrounds from top to bottom"
@@ -34,7 +34,7 @@ class Background:
         self.dx = 0
         self.screen = screen
         self.screen_dim = self.screen.get_size()
-        self.surf = pygame.image.load(os.path.join('data', img)).convert_alpha()
+        self.surf = pygame.image.load(os.path.join(BASE_DATA_PATH, img)).convert_alpha()
         self.dim = self.surf.get_size()
 
     def paint(self, speed=0):
@@ -52,7 +52,7 @@ class Layer:
     "Single background with colorkey set to (2,2,2)"
     def __init__(self, img, height=0, speed=None):
         self.img_filename=img
-        self.img_surf=pygame.image.load(os.path.join('data', self.img_filename)).convert_alpha()
+        self.img_surf=pygame.image.load(os.path.join(BASE_DATA_PATH, self.img_filename)).convert_alpha()
         self.img_dim=self.img_surf.get_size()
         self.height= height!=0 and height or self.img_dim[1]
         self.speed=speed
@@ -79,7 +79,7 @@ class Rider:
     "Represents rider sprite. has its actual position on the screen"
     def __init__(self,img, frames, anims, pos):
         self.img_filename=img
-        self.img_surf=pygame.image.load(os.path.join('data', self.img_filename)).convert_alpha()
+        self.img_surf=pygame.image.load(os.path.join(BASE_DATA_PATH, self.img_filename)).convert_alpha()
         self.img_dim=self.img_surf.get_size()
 
         self.sprite_width=self.img_dim[0]/frames
@@ -208,11 +208,10 @@ class Visualize:
         self.abort=Event()
 
         pygame.mouse.set_visible(False) # hiding mouse cursor
-        self.font=pygame.font.Font(os.path.join('data','m50.ttf'), 60)
-        self.outline_font=pygame.font.Font(os.path.join('data', 'm50.ttf'), 70)
-        #self.font=pygame.font.Font(pygame.font.match_font('freemono'), 90)
-        self.head_font=pygame.font.Font(os.path.join('data','m50.ttf'), 25)
-        self.huge_font=pygame.font.Font(os.path.join('data', 'm26.TTF'), 300)
+        self.font=pygame.font.Font(os.path.join(BASE_DATA_PATH, 'm50.ttf'), 60)
+        self.outline_font=pygame.font.Font(os.path.join(BASE_DATA_PATH, 'm50.ttf'), 70)
+        self.head_font=pygame.font.Font(os.path.join(BASE_DATA_PATH, 'm50.ttf'), 25)
+        self.huge_font=pygame.font.Font(os.path.join(BASE_DATA_PATH, 'm26.TTF'), 300)
         self.title=title
         if self.title:
             pygame.display.set_caption(self.title)
@@ -268,7 +267,7 @@ class Visualize:
         pygame.time.wait(200)
         pygame.display.update(self._center('studios', y=self.resolution[1]/8+f.get_height()-10,
                                            color=(255,100,0),
-                                           font=pygame.font.Font(os.path.join('data','m08.TTF'), 30)))
+                                           font=pygame.font.Font(os.path.join(BASE_DATA_PATH, 'm08.TTF'), 30)))
         pygame.time.wait(1000)
         pygame.display.update(self._center('presents', self.resolution[1]/8+f.get_height()+30,
                                            color=(255,255,255), font=self.head_font))
@@ -466,7 +465,6 @@ class ClientVis(Visualize):
 
         self.keycodes=range(65,91)+range(48,58)+[95,47]
         self.curr_keycode=0
-        #self.chain_gif=GIFImage(os.path.join('data','ch2.gif'))
 
     def anim_cursor(self, focus, pos=0, show=False, hide=False):
         def paint_cursor():
@@ -493,7 +491,7 @@ class ClientVis(Visualize):
         self._center('support', font=self.font, color=(50,)*3, y=10)
         pygame.display.update((0,0,640,100))
 
-        img=pygame.image.load(os.path.join('data', 'sponsors', 'sponsors3.png')).convert()
+        img=pygame.image.load(os.path.join(BASE_DATA_PATH, 'sponsors', 'sponsors3.png')).convert()
         img_ar=pygame.surfarray.array2d(img)
         pixel_ar=img_ar.copy()
         #pixel_ar.resize(map(lambda x: x%2==0 and x or x-1, pixel_ar.shape))
@@ -835,8 +833,7 @@ class CMWCClientVis(ClientVis):
         self.inputs = [ pygame.Rect(140, 150, 120, 110),
                         pygame.Rect(140, 300, 120, 110) ]
 
-        self.num_font=pygame.font.Font(os.path.join('data','m08.TTF'), 90)
-        #self.head_font=pygame.font.Font(os.path.join('data','m50.ttf'), 20)
+        self.num_font=pygame.font.Font(os.path.join(BASE_DATA_PATH, 'm08.TTF'), 90)
         self.input_size=list(self.font.size('9'))
         self.input_size[1]=5
 

@@ -1,11 +1,14 @@
 #!/usr/bin/python
 #encoding:utf8
 
-from goldsprints import Output
+import site
 import pygame
 import sys
 import socket
 from time import sleep
+site.addsitedir('src')
+from goldsprints import Output
+
 
 class RemoteChild:
     out=None
@@ -39,6 +42,7 @@ class RemoteChild:
             try:
                 command, addr = self.s.recvfrom(1000)
                 if command == '__try':
+                    print('catcher bitch {0}:{1}'.format(*addr))
                     self.s.sendto('__catch', addr)
                     continue
                 try:
@@ -55,6 +59,6 @@ class RemoteChild:
                 sys.exit()
 
 
-if __name__=="__main__":
+if __name__ == "__main__":
     remote_child=RemoteChild(sys.argv[1])
     remote_child.run()

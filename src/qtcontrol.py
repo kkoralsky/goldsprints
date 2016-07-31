@@ -3,9 +3,13 @@ from threading import Thread
 from PySide.QtCore import *
 from PySide.QtGui import *
 from PySide.QtDeclarative import QDeclarativeView
+import os.path
 import csv
 
 from cmdserver import Commands
+
+
+BASE_QML_PATH = os.path.join('src', 'qml')
 
 class OutInterface(QObject):
     update_race=Signal(int,int,float,float,float)
@@ -13,6 +17,7 @@ class OutInterface(QObject):
     finish=Signal(float,float)
     start=Signal()
     new_race=Signal(unicode, unicode)
+
 
 class ResultsModel(QAbstractListModel):
     NAME_ROLE = Qt.UserRole+1
@@ -52,7 +57,6 @@ class QtControl(Thread):
         self.view=QDeclarativeView()
         self.view.setResizeMode(QDeclarativeView.SizeRootObjectToView)
 
-
         self.ctxt = self.view.rootContext()
         # setting context properities
         self.ctxt.setContextProperty("sets", self.gs.sets)
@@ -60,7 +64,7 @@ class QtControl(Thread):
         self.ctxt.setContextProperty("dist", self.gs.dist)
         self.ctxt.setContextProperty("results", self.results)
 
-        self.view.setSource(QUrl('view_n900.qml'))
+        self.view.setSource(QUrl(os.path.join(BASE_QML_PATH, 'view_n900.qml')))
         self.root=self.view.rootObject()
         # connecting signals
         self.gs.out.qiface.update_race.connect(self.root.update_race)
@@ -74,6 +78,7 @@ class QtControl(Thread):
         self.app.exec_()
 
         #self.gs.out.quit()
+
 
 if __name__ == "__main__":
     from goldsprints import Goldsprints, Output

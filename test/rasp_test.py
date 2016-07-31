@@ -1,12 +1,15 @@
 #!/usr/bin/python
 
-from goldsprints import Output
 import pygame
+import site
+site.addsitedir('../src')
+from goldsprints import Output
+
 
 distance=400
 unit=5
 #roller_circum=.00025 # in meters
-#dev='' # '02:11:09:20:01:96,00:11:11:29:06:20' 
+#dev='' # '02:11:09:20:01:96,00:11:11:29:06:20'
 
 out = Output((640,480), distance, unit, remote_vis='game', net='arasp:9998', fullscreen=True)
 
