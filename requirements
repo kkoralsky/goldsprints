@@ -1,2 +1,5 @@
 PySide==1.2.2
 pygame==1.9.3
+pyserial==3.3
+https://downloads.sourceforge.net/project/lightblue/lightblue/0.4/lightblue-0.4.tar.gz
+PyBluez==0.22

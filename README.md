@@ -36,9 +36,9 @@ Installation
 
     # apt-get install libqt4-dev qt4-qmake build-essential python-pygame
 
-# install python modules from requirements.txt
+# install python modules (from main directory)
 
-    % pip install -r requirements
+    $ pip install -r requirements
 
 I recommend to create proper [virtual environment](https://virtualenv.pypa.io/en/latest/)
 first though and then, run `pip`.
