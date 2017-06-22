@@ -1,16 +1,8 @@
-import socket, lightblue, pygame, serial
-from subprocess import Popen, PIPE
-from pygame.locals import *
+import socket
 import mmap
+from subprocess import Popen, PIPE
 from threading import Thread
-try:
-    import RPi.GPIO as GPIO
-except ImportError:
-    pass
-try:
-    import posix_ipc as ipc
-except ImportError:
-    pass
+
 
 class Dev:
     def __init__(self, name_str='', threshold=40):
@@ -29,15 +21,14 @@ class BluetoothDev(Dev):
     def __init__(self, name_str, threshold=40):
         print "bt_constructor", name_str
         Dev.__init__(self, name_str, threshold)
+        import lightblue
         try:
-            #if name_str in [ d[0] for d in lightblue.finddevices() ]:
             self.dev=lightblue.socket()
             self.dev.connect((name_str,1))
             self.dev.settimeout(0)
-            #else:
-            #    raise lightblue.BluetoothError
         except lightblue.BluetoothError:
             print('cant get bluetooth working')
+            raise ValueError
 
     def clean(self):
         l=1
@@ -65,6 +56,7 @@ class BluetoothDev(Dev):
 class DoubleBluetoothDev(Dev):
     def __init__(self, name_str, threshold=40):
         Dev.__init__(self, name_str, threshold)
+        import lightblue
         try:
             name_str=name_str.partition(',')
             dev_l=[ d[0] for d in lightblue.finddevices() ]
@@ -79,6 +71,7 @@ class DoubleBluetoothDev(Dev):
                 raise lightblue.BluetoothError
         except lightblue.BluetoothError:
             print('cant get bluetooth working')
+            raise ValueError
 
     def clean(self):
         l1=1
@@ -111,12 +104,14 @@ class DoubleBluetoothDev(Dev):
 class DoubleSerialDev(Dev):
     def __init__(self, name_str, threshold=40):
         Dev.__init__(self,name_str, threshold)
+        import serial
         try:
             names = name_str.partition(',')
             self.dev = [ serial.Serial(names[0], 115200, timeout=0),
                          serial.Serial(names[2], 115200, timeout=0) ]
         except serial.serialutil.SerialException:
             print('cant connect to any serial ports')
+            raise ValueError
 
     def clean(self):
         self.dev[0].readall()
@@ -144,8 +139,9 @@ class DoubleSerialDev(Dev):
 class SerialDev(Dev):
     def __init__(self, name_str, threshold=40):
         Dev.__init__(self,name_str, threshold)
+        import serial
+        self.serial = serial
         try:
-            #self.dev = serial.Serial(name_str, 9600, timeout=0)
             self.dev = serial.Serial(name_str, 115200, timeout=0.1)
         except serial.serialutil.SerialException:
             print('cant connect to serial port')
@@ -172,11 +168,14 @@ class SerialDev(Dev):
 
 class SerialReader(Dev):
     def __init__(self, name_str, threshold=5):
+        import serial
+        self.serial = serial
         try:
             self.dev = serial.Serial(name_str, 115200, timeout=0)
         except serial.serialutil.SerialException:
             print('cant connect to serial port')
             raise ValueError
+
         self.threshold = threshold
         self.sig = [0,0]
 
@@ -200,6 +199,8 @@ class SerialReader(Dev):
 
 class RaspGPIODev(Dev, Thread):
     def __init__(self, config, threshold=5):
+        import RPi.GPIO as GPIO
+        self.GPIO = GPIO
         Thread.__init__(self)
         GPIO.setmode(GPIO.BOARD)
         blue, colon, red = config.partition(',')
@@ -228,8 +229,8 @@ class RaspGPIODev(Dev, Thread):
         blue_old = 1 if self.blue_pull else 0
         red_old = 1 if self.red_pull else 0
         while True:
-            blue_new = GPIO.input(self.blue_pin)
-            red_new = GPIO.input(self.red_pin)
+            blue_new = self.GPIO.input(self.blue_pin)
+            red_new = self.GPIO.input(self.red_pin)
             if blue_new != blue_old:
                 self.blue_sig+=1
                 blue_old=blue_new
@@ -263,6 +264,8 @@ class ShmReader(Dev):
     def __init__(self, config, threshold=5, false_start=5, blue_shmem_name="/blue.shmem",
                  red_shmem_name="/red.shmem", clear_sem_name="/clear.sem",
                  mem=4096):
+        import posix_ipc as ipc
+        self.ipc = ipc
         self.threshold = threshold
         self.false_start = false_start
         self.mem = mem

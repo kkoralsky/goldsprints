@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 import os
 import re
@@ -14,7 +14,7 @@ from cmdserver import CommandServer
 from pgfrontend import PgFront
 from goldsprints import Goldsprints, CMWCGoldsprints, Output
 from qtcontrol import QtControl, OutInterface
-from device import * #BluetoothDev, SerialDev, Dev, DoubleSerialDev
+from device import BluetoothDev, SerialDev, Dev, DoubleSerialDev, RaspGPIODev, ShmReader
 
 
 screen_res=(640,480)
@@ -93,10 +93,12 @@ try:
             dev=SerialDev(opts.dev, opts.threshold)
         else:
             dev = Dev(threshold=opts.threshold)
-
 except ValueError:
     print('ERROR while initializing device')
     dev=Dev(threshold=opts.threshold)
+except ImportError, e:
+    print('ERROR while import proper module')
+    print(e)
 
 gs=Goldsprints(out, dev, opts.distance, opts.unit, opts.sampling,
                opts.roller_circum, sets=opts.sets.split(','))
