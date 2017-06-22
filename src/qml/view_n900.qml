@@ -7,12 +7,10 @@ Item {
     width: 640; height: 480;
     property int current: 0
     //property int dist: 0
-
     property bool yes_youre_racing: false
     property bool race_prepared: false
 
     Component.onCompleted: { cmd.show_results("_",0,0) }
-
 
     function start() {
         console.log('starrt')
@@ -30,19 +28,7 @@ Item {
         abort();
     	console.log('finish');
     }
-    //function finish(blue_res, red_res) {
-        //abort()
 
-        //console.log(blue_res,red_res)
-
-        //var winner = blue_res<red_res ? blue_input.text : red_input.text
-
-        //red_input.text=""
-        //blue_input.text=""
-
-        //cmd.show_results("_",0,0)
-
-    //}
     function new_race(blue, red) {
         blue_input.text=blue
         red_input.text=red
@@ -60,6 +46,7 @@ Item {
 
         }
     }
+
     Column {
 
         spacing: 35 
@@ -67,22 +54,26 @@ Item {
         anchors.top: parent.top
         anchors.topMargin: 50
 
-        Rectangle { border.color: "blue"; border.width: 4;
-		Keys.onPressed: {
-			if(race_prepared)
-				btn_start.cliked()
-			else
-				btn_new_race.clicked()
-		}
+        Rectangle {
+            border.color: "blue"; border.width: 4;
             anchors.topMargin: 10
             anchors.horizontalCenter: parent.horizontalCenter
             height: 60; width: 500
+
+            Keys.onPressed: {
+                if(race_prepared)
+                    btn_start.cliked()
+                else
+                    btn_new_race.clicked()
+            }
+
             Rectangle {
                 id: blue_bar
                 x:0;y:0
                 height:parent.height
                 color: parent.border.color
             }
+
             TextInput {
                 anchors.verticalCenter: parent.verticalCenter;
                 anchors.margins: 4
@@ -101,11 +92,12 @@ Item {
         Rectangle {
             border.color: "red"; border.width: 4; height: 60; width: 500
             anchors.horizontalCenter: parent.horizontalCenter
+
             Keys.onEnterPressed: {
-		    if(race_prepared)
-                    	btn_start.clicked();
-		    else
-			btn_new_race.clicked();
+                if(race_prepared)
+                    btn_start.clicked();
+                else
+                    btn_new_race.clicked();
             }
 
             Rectangle {
@@ -115,7 +107,8 @@ Item {
 
                 color: parent.border.color
             }
-            TextInput { font.pixelSize: 37;
+            TextInput {
+                font.pixelSize: 37;
                 //font.bold: yes_youre_racing
                 anchors { margins:4; verticalCenter: parent.verticalCenter; fill: parent }
                 id: red_input
@@ -128,12 +121,12 @@ Item {
 
         }
 
-
-
-
-        Row { spacing:  30
+        Row {
+            spacing:  30
             anchors.horizontalCenter: parent.horizontalCenter
-            Btn { text: "New race";
+
+            Btn {
+                text: "New race";
                 enabled: ! yes_youre_racing
                 id: btn_new_race;
                 size: 50
@@ -143,7 +136,7 @@ Item {
                         blue_input.text=""
                         race_prepared=false
                     } else if (red_input.text.length+blue_input.text.length>0) {
-			cmd.set_dist(distance_input.text)
+                        cmd.set_dist(distance_input.text)
                         var res=cmd.new_race(blue_input.text, red_input.text, "_", "_")
 
                         if(res.search(/.+(blue) and.+(red)/))
@@ -165,6 +158,7 @@ Item {
                     cmd.swap()
                 }
             }
+
             Btn { text: yes_youre_racing ? "Abort" : "Start"
                 id: btn_start;
                 enabled: race_prepared
@@ -177,32 +171,31 @@ Item {
                         cmd.start()
                         yes_youre_racing=true
                     }
-
-           //yes_youre_racing = !yes_youre_racing
-
                 }
             }
 
 
         }
-        Row { spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
+        Row {
+            spacing: 20; anchors.horizontalCenter: parent.horizontalCenter
+
             Btn { size: 35; text: "show sponsors"; onClicked: cmd.sponsors() }
-            //Btn { size: 35; text: "find bt device(s)"; onClicked: cmd.init_bt() }
-	    TextInput { font.pixelSize: 35;
-	    	color: "white";
-                anchors { margins:4; verticalCenter: parent.verticalCenter; }
-		width: 260; height: 40;
+            TextInput {
+                width: 260; height: 40;
                 id: distance_input;
                 enabled: ! yes_youre_racing;
-                //validator: RegExpValidator { regExp: /[0-9]{,4}/ }
-		validator: IntValidator { bottom: 10; top: 1000000}
-		horizontalAlignment: Text.AlignHCenter
-		text: "400"
-		Keys.onUpPressed: { distance_input.text=parseInt(distance_input.text)+100 }
-		Keys.onDownPressed: { distance_input.text=parseInt(distance_input.text)-100 }
-		Keys.onLeftPressed: { distance_input.text=parseInt(distance_input.text)-10 }
-		Keys.onRightPressed: { distance_input.text=parseInt(distance_input.text)+10 }
-		cursorVisible: false
+                font.pixelSize: 35;
+                color: "white";
+                horizontalAlignment: Text.AlignHCenter
+                text: "400"
+                anchors { margins:4; verticalCenter: parent.verticalCenter; }
+                validator: IntValidator { bottom: 10; top: 1000000}
+                cursorVisible: false
+
+                Keys.onUpPressed: { distance_input.text=parseInt(distance_input.text)+100 }
+                Keys.onDownPressed: { distance_input.text=parseInt(distance_input.text)-100 }
+                Keys.onLeftPressed: { distance_input.text=parseInt(distance_input.text)-10 }
+                Keys.onRightPressed: { distance_input.text=parseInt(distance_input.text)+10 }
             }
             Btn {
                 property bool showing_res: false
@@ -219,49 +212,43 @@ Item {
         }
 
         ListView {
-	    Component.onCompleted: { console.log(count) }
+            Component.onCompleted: { console.log(count) }
             width: r.width
-	    height: r.height
+            height: r.height
             clip: true
-	    focus: true
+            focus: true
             x: 10
-            //interactive: false
-            //                header: Rectangle { color: "black"; height: 10; width: parent.width  }
-            //                footer: Rectangle { color: "black" ; height: 10; width: parent.width  }
             model: results
             delegate: Row {
-		Text {
+                Text {
                     font.letterSpacing: 4
                     height: 30;
                     anchors.margins: 10
-		    width: 50
+                    width: 50
                     text: index+1
                     font.pixelSize: 40
-		    color: "white"
-		}
-		Text { 
+                    color: "white"
+                }
+                Text { 
                     font.letterSpacing: 4
                     height: 30;
                     anchors.margins: 10
                     text: name
-		    width: 250
-		    color: "white"
+                    width: 250
+                    color: "white"
                     font.pixelSize: 40
-		}
-		Text {
+                }
+                Text {
                     font.letterSpacing: 4
                     height: 30;
                     anchors.margins: 10
                     text: result
-		    color: "yellow"
+                    color: "yellow"
                     font.pixelSize: 40
-		}
+                }
             }
-	}
-
-
+        }
     }
-
 }
 
 

@@ -48,7 +48,6 @@ show_results [<set>] [<n>] \  - show <n> best results of <set>, if no <n>
                                 results at one time
 set_dist <d> [<set>]          - set the distance to <d> for <set>
 quit                          - abort runing race if needed and quit"""
-
     def _check_r(self, blue, red, b_set, r_set):
         msg=''
         if (blue and len(blue)>15) or (red and len(red)>15):
@@ -78,7 +77,8 @@ quit                          - abort runing race if needed and quit"""
                 Race(*attrs)
             return "{0} (blue) and {1} (red)".format(blue, red)
 
-    def r(self, *args, **kwargs): return self.new_race(*args, **kwargs)
+    def r(self, *args, **kwargs):
+        return self.new_race(*args, **kwargs)
 
     @QtCore.Slot(str,str,str)
     def finals_race(self, blue, red, rset='_'):
@@ -95,7 +95,9 @@ quit                          - abort runing race if needed and quit"""
         else:
             return 'both racers have to be given'
 
-    def f(self, *args, **kwargs): return self.finals_race(*args, **kwargs)
+
+    def f(self, *args, **kwargs):
+        return self.finals_race(*args, **kwargs)
 
     def _check_cr(self, blue, red):
         try:
@@ -134,7 +136,6 @@ quit                          - abort runing race if needed and quit"""
             self.race_q.append(players)
             return 'added.'
 
-
     def next_race(self):
         if not self.gs.race_is_runing:
             racers=self.race_q.pop(0)
@@ -144,7 +145,8 @@ quit                          - abort runing race if needed and quit"""
         else:
             return 'some race is actually running; wait a bit for its finish'
 
-    def n_r(self): return self.next_race()
+    def n_r(self):
+        return self.next_race()
 
     @QtCore.Slot()
     def swap(self):
@@ -162,7 +164,8 @@ quit                          - abort runing race if needed and quit"""
         else:
             return "the race is actually runing or hasnt been prepared yet"
 
-    def s(self): return self.start()
+    def s(self):
+        return self.start()
 
     @QtCore.Slot()
     def abort(self):
@@ -172,16 +175,8 @@ quit                          - abort runing race if needed and quit"""
         self.gs.out.abort()
         return 'abort'
 
-    def a(self): self.abort()
-
-#     def begin_finals(self, rset='',  size=8):
-#         try:
-#             size=int(size)
-#         except ValueError: size=0
-#         if size in (4,8,16,32):
-#             return self.gs.begin_finals(rset, size)
-#         else:
-#             return 'take one of: 4, 8, 16 or 32'
+    def a(self):
+        self.abort()
 
     @QtCore.Slot(str, result=str)
     def next_round(self, rset, vis=False):
@@ -189,10 +184,14 @@ quit                          - abort runing race if needed and quit"""
             self.msg=self.gs.begin_round(rset, bool(int(vis)))
             return '\r\n'.join(self.msg)
 
-    def n(self, *args, **kwargs): return self.next_round(*args, **kwargs)
+    def n(self, *args, **kwargs):
+        return self.next_round(*args, **kwargs)
 
-    def print_msg(self): self.gs.vis.show(self.msg[1:], title=self.msg[0])
-    def p(self): self.print_msg()
+    def print_msg(self):
+        self.gs.vis.show(self.msg[1:], title=self.msg[0])
+
+    def p(self):
+        self.print_msg()
 
     def show_races(self, rset, vis=False):
         self.msg=self.gs.f_races_in_round(rset, int(vis))
@@ -200,7 +199,8 @@ quit                          - abort runing race if needed and quit"""
 
         return '\r\n'.join(self.msg)
 
-    def sr(self, *args, **kwargs): return self.show_races(*args, **kwargs)
+    def sr(self, *args, **kwargs):
+        return self.show_races(*args, **kwargs)
 
     def replace(self, rset, org, subst=None):
         msg=self.gs.f_replace(rset, org, subst)
@@ -245,7 +245,6 @@ quit                          - abort runing race if needed and quit"""
 
     def clear_f(self):
         self.gs.final_results=[]
-
 
     @QtCore.Slot(str)
     def set_dist(self, d):
@@ -380,7 +379,6 @@ quit                          - abort runing race if needed and quit"""
             return self._res(t, '{0} RESULTS'.format(rset.upper()), enum=True)
         else:
             return '{0} set isnt in current competition'.format(rset)
-
 
     def quit(self):
         self.gs.abort.set()
