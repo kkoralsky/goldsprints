@@ -34,7 +34,7 @@ Installation
 
 # Install required packages. In Debian/Ubuntu:
 
-    # apt-get install libqt4-dev qt4-qmake build-essential python-pygame
+    $ sudo apt-get install libqt4-dev qt4-qmake build-essential python-pygame libopenobex2-dev cmake
 
 # install python modules (from main directory)
 
