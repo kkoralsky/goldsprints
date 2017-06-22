@@ -38,7 +38,7 @@ Installation
 
 # install python modules from requirements.txt
 
-    % pip install -r requirements.txt
+    % pip install -r requirements
 
 I recommend to create proper [virtual environment](https://virtualenv.pypa.io/en/latest/)
 first though and then, run `pip`.
