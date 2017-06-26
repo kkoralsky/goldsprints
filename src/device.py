@@ -158,7 +158,7 @@ class SerialDev(Dev):
         import serial
         self.serial = serial
         try:
-            self.dev = serial.Serial(name_str, 115200, timeout=0.1)
+            self.dev = serial.Serial(name_str, 115200, timeout=0)
         except serial.serialutil.SerialException:
             print('cant connect to serial port')
             raise ValueError
@@ -178,7 +178,8 @@ class SerialDev(Dev):
             if self.sig[ret]>=self.threshold:
                 self.sig[ret]-=self.threshold
                 return ret
-        except ValueError: return -1
+        except ValueError:
+            return -1
         return -1
 
 
