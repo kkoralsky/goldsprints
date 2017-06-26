@@ -8,15 +8,16 @@ from threading import Thread
 
 class PgFront(Thread):
   daemon=True
-  
+
   def __init__(self, gs, primary_vis):
       Thread.__init__(self)
-      
+
       self.name="PgFront"
       self.gs=gs
       self.vis=primary_vis
+      pygame.init()
       pygame.key.set_repeat(200,100)
-      
+
 
   def ask_for_names(self):
     self.gs.race_is_runing=True # lock other means of starting new race
@@ -78,7 +79,7 @@ class PgFront(Thread):
           if ev.type==QUIT:
               self.gs.abort.set()
               self.gs.quit.set()
-              if self.gs.another_vis:
+              if getattr(self.gs, 'another_vis'):
                 self.gs.another_vis.kill()
               sys.exit()
           if ev.type==KEYDOWN:
@@ -105,11 +106,11 @@ class PgFront(Thread):
                   self.gs.dist+=100
                 elif (ev.key==K_DOWN or ev.key==263) and self.gs.dist>100:
                   self.gs.dist-=100
-                  
-                self.gs.out.set_dist(self.gs.dist)                  
+
+                self.gs.out.set_dist(self.gs.dist)
                 self.vis.repaint_dist_widg()
 
 if __name__ == "__main__":
   from visualize import ClientVis
-  
+
   PgFront(Goldsprints(ClientVis((640,480)), None, 100, 5, 0, sets=['male', 'female'])).run()
