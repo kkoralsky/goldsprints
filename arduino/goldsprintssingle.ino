@@ -2,7 +2,7 @@ const int hallPin = 8;
 int hall,old_hall;
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(hallPin, INPUT);
  
   digitalWrite(hallPin, HIGH);
