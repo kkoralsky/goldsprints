@@ -16,6 +16,22 @@ class Dev:
     def cycle(self):
         pass
 
+class PygameDev(Dev):
+    def __init__(self):
+        import pygame
+
+        self.pygame = pygame
+        self. threshold = 1
+
+    def cycle(self):
+        ev = self.pygame.event.wait()
+
+        if ev.type==self.pygame.KEYDOWN:
+            if ev.key==self.pygame.K_LEFT:
+                return 0
+            elif ev.key == self.pygame.K_RIGHT:
+                return 1
+        return -1
 
 class BluetoothDev(Dev):
     def __init__(self, name_str, threshold=40):

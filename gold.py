@@ -14,7 +14,7 @@ from cmdserver import CommandServer
 from pgfrontend import PgFront
 from goldsprints import Goldsprints, CMWCGoldsprints, Output
 from qtcontrol import QtControl, OutInterface
-from device import BluetoothDev, SerialDev, Dev, DoubleSerialDev, RaspGPIODev, ShmReader
+from device import BluetoothDev, SerialDev, Dev, DoubleSerialDev, RaspGPIODev, ShmReader, PygameDev
 
 
 screen_res=(640,480)
@@ -92,7 +92,7 @@ try:
         elif os.path.exists(opts.dev):
             dev=SerialDev(opts.dev, opts.threshold)
         else:
-            dev = Dev(threshold=opts.threshold)
+            dev = PygameDev()
 except ValueError:
     print('ERROR while initializing device')
     dev=Dev(threshold=opts.threshold)
