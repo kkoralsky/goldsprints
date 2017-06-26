@@ -92,7 +92,6 @@ class Output:
         if self.qiface: self.qiface.update_race.emit(*args)
         if self.another_vis: self.another_vis.stdin.write('vis.'+s)
         if self.primary_vis:
-            #Thread(target=self.primary_vis.update_race, args=args).start()
             self.primary_vis.update_race(*args)
 
     def finish(self, results):
