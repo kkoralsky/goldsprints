@@ -80,6 +80,9 @@ is installed. To see commands you can use type: `help`
 Hacking
 =======
 
+This software is licensed under 3 Clause BSD License. See LICENSE.txt. Feel free
+to contribute, report bugs etc. PR are more than welcome.
+
 Files
 -----
 - `gold.py ` - main program which handles commandline options;
