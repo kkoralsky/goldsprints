@@ -38,7 +38,7 @@ Installation
    In Debian/Ubuntu Linux:
 
         $ sudo apt-get install libqt4-dev qt4-qmake build-essential python-pygame\
-                libopenobex2-dev cmake libpyside1.2
+                libopenobex2-dev cmake libpyside1.2 python-pyside*
 
 2. install python modules (from main directory)
 

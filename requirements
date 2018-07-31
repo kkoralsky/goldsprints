@@ -1,5 +1,9 @@
-PySide==1.2.2
-pygame==1.9.3
+# these 2 should be compiled systemwide
+#PySide==1.2.2
+#pygame==1.9.3
 pyserial==3.3
 https://downloads.sourceforge.net/project/lightblue/lightblue/0.4/lightblue-0.4.tar.gz
+grpcio==1.13.0
+grpcio-tools==1.13.0
 PyBluez==0.22
+googleapis-common-protos==1.5.3
