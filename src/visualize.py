@@ -8,7 +8,7 @@ from random import randint, shuffle
 from time import sleep
 from copy import copy
 
-BASE_DATA_PATH = os.path.join('src', 'data')
+BASE_DATA_PATH = os.path.join(os.path.dirname(__file__), 'data')
 
 class LayersStack:
     "Represents stack of backgrounds from top to bottom"
@@ -875,13 +875,6 @@ class CMWCClientVis(ClientVis):
 
 
 if __name__ == '__main__':
-
-    import csv
-    results={'male':[], 'female':[]}
-    for r in csv.reader(open('results.txt')):
-        r=[ float(r[0]), dict(zip(('set', 'name'), r[1:])) ]
-        if r[1]['set'] in ['male', 'female']:
-            results[r[1]['set']].append(r)
 
     vis = SimplegameVis((640,480), unit=1, dist=720, title='cmwc')
     vis.start()
