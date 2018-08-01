@@ -22,27 +22,35 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
         self.vis = vis_instance
 
     def NewTournament(self, request, context):
-        pass
+        self.player_count = request.player_count
+        self.mode = request.mode
+        self.colors = request.color
+        self.set_dist(request.destValue)
 
     def NewRace(self, request, context):
-        self.vis.new_race([p.name for p in request.players])
+        self.player_names = [p.name for p in request.players]
+        self.player_count = len(self.player_names)
+        self.vis.new_race(self.player_names)
 
     def StartRace(self, request, context):
-        pass
+        self.vis.start([True]*2)
+
     def AbortRace(self, request, context):
-        pass
+        self.vis.banner(request.message)
+
     def UpdateRace(self, request_iterator, context):
         pass
+
     def FinishRace(self, request, context):
-        pass
+        # [name, result, current position]
+        results = [[r.player.name, r.result, 0] for r in request.result]
+        self.vis.finish(results)
 
 
 class GrpcRunner(object):
-    default_port = 9998
-
-    def __init__(self, vis_name="simplegame", port=None):
-        self.port = self.default_port if port is None else port
-        vis_class = getattr(visualize, vis_name.capitalize()+"Vis")
+    def __init__(self, vis_name="simplegame", port=9998):
+        self.port = port
+        vis_class = getattr(visualize, vis_name.capitalize() + "Vis")
         self.vis = vis_class(RESOLUTION, fullscreen=FULLSCREEN, unit=UNIT)
 
     def serve(self):
@@ -60,4 +68,4 @@ class GrpcRunner(object):
 
 
 if __name__ == '__main__':
-    GrpcRunner(vis_name=sys.argv[1], port=int(sys.argv[2])).serve()
+    GrpcRunner(*sys.argv[1:]).serve()
