@@ -3,6 +3,7 @@ import grpc
 import sys
 import time
 from concurrent import futures
+import traceback
 import os
 
 site.addsitedir("src")
@@ -30,6 +31,7 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
     def NewRace(self, request, context):
         self.player_names = [p.name for p in request.players]
         self.player_count = len(self.player_names)
+        self.vis.set_dist(request.destValue)
         self.vis.new_race(self.player_names)
 
     def StartRace(self, request, context):
@@ -39,7 +41,16 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
         self.vis.banner(request.message)
 
     def UpdateRace(self, request_iterator, context):
-        pass
+        # update_race(player, pos, dpos=1, speed=0, time=0):
+
+        for req in request_iterator:
+            print "updating race ", req.playerNum, req.distance
+            try:
+                self.vis.update_race(req.playerNum, req.distance)
+            except Exception as e:
+                traceback.print_exc()
+
+        print 'closing'
 
     def FinishRace(self, request, context):
         # [name, result, current position]
@@ -54,7 +65,7 @@ class GrpcRunner(object):
         self.vis = vis_class(RESOLUTION, fullscreen=FULLSCREEN, unit=UNIT)
 
     def serve(self):
-        server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+        server = grpc.server(futures.ThreadPoolExecutor(max_workers=1))
         pb2_grpc.add_VisualServicer_to_server(
             GrpcVisualizer(self.vis), server)
         server.add_insecure_port('[::]:{}'.format(self.port))
