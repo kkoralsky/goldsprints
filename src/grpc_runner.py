@@ -13,20 +13,23 @@ from protos import sprints_pb2_grpc as pb2_grpc
 import visualize
 
 
-RESOLUTION=map(int, os.environ.get("PYGAME_RESOLUTION", "640x480").split("x"))
-FULLSCREEN=os.environ.has_key("PYGAME_FULLSCREEN")
-UNIT=int(os.environ.get("PYGAME_UNIT", "5"))
-
+RESOLUTION = map(int, os.environ.get("PYGAME_RESOLUTION", "640x480").split("x"))
+FULLSCREEN = os.environ.has_key("PYGAME_FULLSCREEN")
+UNIT = float(os.environ.get("PYGAME_UNIT", ".5"))
+SAMPLING = float(os.environ.get("PYGAME_SAMPLING", "0.04"))
+ROLLER_CIRCUM = .00025
 
 class GrpcVisualizer(pb2_grpc.VisualServicer):
+    DISTANCE = 0
+    TIME = 1
     def __init__(self, vis_instance):
         self.vis = vis_instance
 
     def NewTournament(self, request, context):
-        self.player_count = request.player_count
+        self.player_count = request.playerCount
         self.mode = request.mode
         self.colors = request.color
-        self.set_dist(request.destValue)
+        self.vis.set_dist(request.destValue)
 
     def NewRace(self, request, context):
         self.player_names = [p.name for p in request.players]
@@ -41,20 +44,37 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
         self.vis.banner(request.message)
 
     def UpdateRace(self, request_iterator, context):
-        # update_race(player, pos, dpos=1, speed=0, time=0):
+        start_time=time.time()
+        between_time=[start_time,start_time]
+        avg_between_time = [start_time, start_time]
+        avg_between_dist = [0, 0]
+        between_dist=[0,0]
+        curr_dist=[0,0]
+        speed=[0,0]
+        bars = self.mode==self.DISTANCE
 
         for req in request_iterator:
-            print "updating race ", req.playerNum, req.distance
-            try:
-                self.vis.update_race(req.playerNum, req.distance)
-            except Exception as e:
-                traceback.print_exc()
+            p = req.playerNum
+            dist = req.distance
+            curr_time = time.time()
+            dtime = curr_time-between_time[p]
+            if dtime > SAMPLING:
+                curr_dist[p] = dist
+                dpos = curr_dist[p]-between_dist[p]
+                if dpos>0:
+                    if curr_time-avg_between_time[p] > 1:  # upd speed every sec
+                        speed[p] = 3600*ROLLER_CIRCUM*UNIT*(curr_dist[p]-avg_between_dist[p])/(curr_time-avg_between_time[p])
+                        avg_between_time[p] = curr_time
+                        avg_between_dist[p] = curr_dist[p]
 
-        print 'closing'
-
+                    self.vis.update_race(p, dist, dpos, speed[p], curr_time-start_time, bars=bars)
+                    between_dist[p]=curr_dist[p]
+                between_time[p]=curr_time
     def FinishRace(self, request, context):
-        # [name, result, current position]
-        results = [[r.player.name, r.result, 0] for r in request.result]
+        # [result, name, current position]
+
+        results = [((r.result * 10**-9) if self.mode==self.DISTANCE else r.result, r.player.name, 0)
+                    for r in request.result]
         self.vis.finish(results)
 
 
