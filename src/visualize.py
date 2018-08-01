@@ -364,13 +364,16 @@ class Visualize:
         for i,r in enumerate(results):
             if r[1]:
                 if isinstance(r[1], str): r[1]=unicode(r[1],'utf')
-                l=self._center(r[1].upper(),
-                               y=((results[0][1] and results[1][1]) and \
+                l=self._center(r[1].upper(), y=((results[0][1] and results[1][1]) and \
                                   i*200+65
                                   or 160),
                                color=(i and (255,0,0) or (0,0,255)), font=self.head_font)
-                if r[0] is None: res='n/q'
-                else: res='{0:.3f}'.format(r[0])
+                if r[0] is None:
+                    res='n/q'
+                elif r[0].is_integer():
+                    res = '{:.0f}'.format(r[0])
+                else:
+                    res='{0:.3f}'.format(r[0])
                 l=self._center(res, y=l.bottom, color=(255,255,255))
                 if r[0] and r[2]>0:
                     self._center('curr pos: '+str(r[2]), y=l.bottom-20, color=(100,)*3, font=self.head_font)
@@ -636,8 +639,8 @@ class GameVis(ClientVis):
 
         self.speed=[0,0]
 
-        pygame.draw.rect(self.screen, (255,255,255), (20, 445, 600, 10), 1)
-        pygame.draw.rect(self.screen, (255,255,255), (20, 465, 600, 10), 1)
+        #  pygame.draw.rect(self.screen, (255,255,255), (20, 445, 600, 10), 1)
+        #  pygame.draw.rect(self.screen, (255,255,255), (20, 465, 600, 10), 1)
 
         pygame.display.update()
 
@@ -683,8 +686,8 @@ class GameVis(ClientVis):
                              (self.resolution[0]/2-self.go_banner.size[0]/2,
                               self.resolution[1]/2-self.go_banner.size[1]/2))
             self.screen.fill((0,)*3, (0,440,640,40))
-            pygame.draw.rect(self.screen, (255,255,255), (20, 445, 600, 10), 1)
-            pygame.draw.rect(self.screen, (255,255,255), (20, 465, 600, 10), 1)
+            #  pygame.draw.rect(self.screen, (255,255,255), (20, 445, 600, 10), 1)
+            #  pygame.draw.rect(self.screen, (255,255,255), (20, 465, 600, 10), 1)
 
         if time:
             self.screen.blit(self.head_font.render('T: {0: 5.2f}'.format(time), False, (255,255,255)),
@@ -714,19 +717,17 @@ class SimplegameVis(GameVis):
         other = int(not player)
         self.speed[player]=speed
 
-    def update_race(self, player, pos, dpos=1, speed=0, time=0):
+    def update_race(self, player, pos, dpos=1, speed=0, time=0, bars=True):
         #print player, pos, dpos, speed, time
         clock_tick = self.clock.tick()
         wrld_speed=0
         other=int(not player)
         self.speed[player]=speed
 
-        if abs(self.riders[player].pos[0]-self.screen_half_segm)>self.unit or \
-                self.dist-pos < self.screen_half_segm/self.unit:
+        if self.riders[player].pos[0] < self.screen_half_segm:
             self.riders[player].pos[0]+=self.unit*dpos
         else:
             wrld_speed=-self.unit*dpos
-            #self.players_pos[other]-=self.unit
         self.riders[other].pos[0]+=wrld_speed
 
         self.world.paint(wrld_speed)
@@ -745,15 +746,20 @@ class SimplegameVis(GameVis):
                             (self.resolution[0]/2-self.go_banner.size[0]/2,
                             self.resolution[1]/2-self.go_banner.size[1]/2))
             self.screen.fill((0,)*3, (0,440,640,40))
-            pygame.draw.rect(self.screen, (255,255,255), (20, 445, 600, 10), 1)
-            pygame.draw.rect(self.screen, (255,255,255), (20, 465, 600, 10), 1)
+            #  pygame.draw.rect(self.screen, (255,255,255), (20, 445, 600, 10), 1)
+            #  pygame.draw.rect(self.screen, (255,255,255), (20, 465, 600, 10), 1)
 
         if time:
             self.screen.blit(self.head_font.render('T: {0: 5.2f}'.format(time), False, (255,255,255)),
                             (415, 20))
 
-        self.screen.fill(player and pygame.color.THECOLORS['red'] or pygame.color.THECOLORS['blue'],
-                        (22, 446+player*20, pos*600/self.dist-2, 7))
+        if bars:
+            self.screen.fill(player and pygame.color.THECOLORS['red'] or pygame.color.THECOLORS['blue'],
+                            (0, 440+player*20, pos*640/self.dist, 20))
+        else:
+            self.screen.fill((0,)*3, (130+player*320, 446, 100, 50))
+            self.screen.blit(self.head_font.render(str(pos), False, player and (255,0,0) or (0,0,255)),
+                             (130+player*320, 446))
 
         pygame.display.update()
 
