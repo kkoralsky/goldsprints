@@ -71,11 +71,16 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
                     between_dist[p]=curr_dist[p]
                 between_time[p]=curr_time
     def FinishRace(self, request, context):
-        # [result, name, current position]
-
-        results = [((r.result * 10**-9) if self.mode==self.DISTANCE else r.result, r.player.name, 0)
-                    for r in request.result]
-        self.vis.finish(results)
+        try:
+            name_ord_map = { name: i for i, name in enumerate(self.player_names) }
+            results = [None]*self.player_count
+            for r in request.result:
+                # [result, name, current position]
+                results[name_ord_map[r.player.name]] = [(r.result * 10**-9) if self.mode==self.DISTANCE else r.result,
+                                                        r.player.name, 0]
+            self.vis.finish(results)
+        except Exception:
+            traceback.print_exc()
 
 
 class GrpcRunner(object):
