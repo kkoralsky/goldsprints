@@ -806,9 +806,9 @@ class BarVis(ClientVis):
         self._back()
         pygame.display.update()
 
-        self._start_intro(self._start_intro("3", 1000), time=500, paint_back_f=self._back)
-        self._start_intro(self._start_intro("2", 1000), time=500, paint_back_f=self._back)
-        self._start_intro(self._start_intro("1", 1000), time=500, paint_back_f=self._back)
+        self._start_intro(self._start_intro("3", 800), time=200, paint_back_f=self._back)
+        self._start_intro(self._start_intro("2", 800), time=200, paint_back_f=self._back)
+        self._start_intro(self._start_intro("1", 800), time=200, paint_back_f=self._back)
 
         pygame.display.update(self._center("GO", font=self.huge_font, color=(255,255,0)))
         self.go_cleared=False
