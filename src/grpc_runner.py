@@ -76,7 +76,7 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
             results = [None]*self.player_count
             for r in request.result:
                 # [result, name, current position]
-                results[name_ord_map[r.player.name]] = [(r.result * 10**-9) if self.mode==self.DISTANCE else r.result,
+                results[name_ord_map[r.player.name]] = [(r.result * 10**-3) if self.mode==self.DISTANCE else r.result,
                                                         r.player.name, 0]
             self.vis.finish(results)
         except Exception:
