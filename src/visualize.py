@@ -773,7 +773,8 @@ class BarVis(ClientVis):
         self.bars= [ pygame.Rect(20,20, 600, 140),
                      pygame.Rect(20,300, 600, 140) ]
 
-        self.set_dist(self.dist)
+        if self.dist > 0:
+            self.set_dist(self.dist)
 
     def set_dist(self, d):
         self.dist=d
@@ -813,7 +814,7 @@ class BarVis(ClientVis):
         pygame.display.update(self._center("GO", font=self.huge_font, color=(255,255,0)))
         self.go_cleared=False
 
-    def update_race(self, player, pos, dpos=1, speed=0, time=0):
+    def update_race(self, player, pos, dpos=1, speed=0, time=0, **kwargs):
         r=[]
 
         if not self.go_cleared and time>=2:
