@@ -25,6 +25,11 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
     def __init__(self, vis_instance):
         self.vis = vis_instance
 
+    def _dist_not_finished(self, dist):
+        if self.mode is self.DISTANCE:
+            return dist < self.dist
+        return True
+
     def NewTournament(self, request, context):
         self.player_count = request.playerCount
         self.mode = request.mode
@@ -34,6 +39,7 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
     def NewRace(self, request, context):
         self.player_names = [p.name for p in request.players]
         self.player_count = len(self.player_names)
+        self.dist = request.destValue
         self.vis.set_dist(request.destValue)
         self.vis.new_race(self.player_names)
 
@@ -61,7 +67,7 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
             if dtime > SAMPLING:
                 curr_dist[p] = dist
                 dpos = curr_dist[p]-between_dist[p]
-                if dpos>0:
+                if dpos>0 and self._dist_not_finished(between_dist[p]):
                     if curr_time-avg_between_time[p] > 1:  # upd speed every sec
                         speed[p] = 3600*ROLLER_CIRCUM*UNIT*(curr_dist[p]-avg_between_dist[p])/(curr_time-avg_between_time[p])
                         avg_between_time[p] = curr_time
@@ -70,6 +76,7 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
                     self.vis.update_race(p, dist, dpos, speed[p], curr_time-start_time, bars=bars)
                     between_dist[p]=curr_dist[p]
                 between_time[p]=curr_time
+
     def FinishRace(self, request, context):
         try:
             name_ord_map = { name: i for i, name in enumerate(self.player_names) }
