@@ -644,9 +644,9 @@ class GameVis(ClientVis):
 
         pygame.display.update()
 
-        self._start_intro(self._start_intro("3", 1000), time=500, paint_back_f=self.world.paint)
-        self._start_intro(self._start_intro("2", 1000), time=500, paint_back_f=self.world.paint)
-        self._start_intro(self._start_intro("1", 1000), time=500, paint_back_f=self.world.paint)
+        self._start_intro(self._start_intro("3", 800), time=200, paint_back_f=self.world.paint)
+        self._start_intro(self._start_intro("2", 800), time=200, paint_back_f=self.world.paint)
+        self._start_intro(self._start_intro("1", 800), time=200, paint_back_f=self.world.paint)
 
         self.go_banner=ColoredText('GO', font=self.huge_font, scale=5)
 
