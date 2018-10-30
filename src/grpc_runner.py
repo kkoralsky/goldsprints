@@ -44,7 +44,7 @@ class GrpcVisualizer(pb2_grpc.VisualServicer):
         self.vis.new_race(self.player_names)
 
     def StartRace(self, request, context):
-        self.vis.start([True]*2)
+        self.vis.start([True]*2, countdown_time=request.countdownTime)
 
     def AbortRace(self, request, context):
         self.vis.banner(request.message)

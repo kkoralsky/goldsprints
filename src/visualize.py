@@ -622,7 +622,9 @@ class GameVis(ClientVis):
         self.unit=u
         #self.dist = float(self.resolution[0]-20)/self.unit
 
-    def start(self, players=(True, True)):
+    def start(self, players=(True, True), countdown_time=1000):
+        countdown_step = countdown_time / 3
+
         self.players=players
         self._transition()
 
@@ -644,9 +646,12 @@ class GameVis(ClientVis):
 
         pygame.display.update()
 
-        self._start_intro(self._start_intro("3", 800), time=200, paint_back_f=self.world.paint)
-        self._start_intro(self._start_intro("2", 800), time=200, paint_back_f=self.world.paint)
-        self._start_intro(self._start_intro("1", 800), time=200, paint_back_f=self.world.paint)
+        self._start_intro(self._start_intro("3", int(.8*countdown_step)), time=int(.2*countdown_step),
+                          paint_back_f=self.world.paint)
+        self._start_intro(self._start_intro("2", int(.8*countdown_step)), time=int(.2*countdown_step),
+                          paint_back_f=self.world.paint)
+        self._start_intro(self._start_intro("1", int(.8*countdown_step)), time=int(.2*countdown_step),
+                          paint_back_f=self.world.paint)
 
         self.go_banner=ColoredText('GO', font=self.huge_font, scale=5)
 
@@ -803,13 +808,17 @@ class BarVis(ClientVis):
                          (400,430))
         pygame.display.update((0,370,640, 110))
 
-    def start(self, whatever=False):
+    def start(self, whatever=False, countdown_time=1000):
+        countdown_step = countdown_time / 3
         self._back()
         pygame.display.update()
 
-        self._start_intro(self._start_intro("3", 800), time=200, paint_back_f=self._back)
-        self._start_intro(self._start_intro("2", 800), time=200, paint_back_f=self._back)
-        self._start_intro(self._start_intro("1", 800), time=200, paint_back_f=self._back)
+        self._start_intro(self._start_intro("3", int(.8*countdown_step)), time=int(.2*countdown_step),
+                          paint_back_f=self._back)
+        self._start_intro(self._start_intro("2", int(.8*countdown_step)), time=int(.2*countdown_step),
+                          paint_back_f=self._back)
+        self._start_intro(self._start_intro("1", int(.8*countdown_step)), time=int(.2*countdown_step),
+                          paint_back_f=self._back)
 
         pygame.display.update(self._center("GO", font=self.huge_font, color=(255,255,0)))
         self.go_cleared=False
